@@ -1,7 +1,7 @@
 name: Assemble daed source
 
 # Assembles one pinned, self-contained daed source tarball (all repos at fixed
-# commits from daed/pins.env + prebuilt web), uploads it to the daed-src release,
+# commits from ci/pins.env + prebuilt web), uploads it to the daed-src release,
 # and writes PKG_HASH into daed/Makefile. SDK builds then just go-compile it.
 
 on:
@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Load pins
-        run: cat daed/pins.env | grep -E '^[A-Z]' >> "$GITHUB_ENV"
+        run: cat ci/pins.env | grep -E '^[A-Z]' >> "$GITHUB_ENV"
 
       - uses: actions/setup-go@v6
         with:
@@ -53,7 +53,7 @@ jobs:
               && go mod edit -replace github.com/daeuniverse/outbound=../outbound \
               && go mod edit -replace github.com/daeuniverse/quic-go=../quic-go \
               && go mod tidy \
-              && cp "$GITHUB_WORKSPACE/daed/default.pgo" default.pgo )
+              && cp "$GITHUB_WORKSPACE/ci/default.pgo" default.pgo )
 
           # Prebuild web (frozen lockfile = reproducible) and embed.
           corepack enable pnpm

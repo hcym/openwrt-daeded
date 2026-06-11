@@ -30,7 +30,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -eu
-          . daed/pins.env
+          . ci/pins.env
           daed_new=$(git ls-remote https://github.com/daeuniverse/daed HEAD | cut -f1)
           wing_new=$(git ls-remote https://github.com/daeuniverse/dae-wing HEAD | cut -f1)
           core_new=$(git ls-remote https://github.com/olicesx/dae kdae | cut -f1)
@@ -77,11 +77,11 @@ jobs:
             -e "s/^CORE_COMMIT=.*/CORE_COMMIT=${{ steps.detect.outputs.core }}/" \
             -e "s/^OUTBOUND_COMMIT=.*/OUTBOUND_COMMIT=${{ steps.detect.outputs.outbound }}/" \
             -e "s/^QUICGO_COMMIT=.*/QUICGO_COMMIT=${{ steps.detect.outputs.quicgo }}/" \
-            daed/pins.env
+            ci/pins.env
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B "$STAGING"
-          git add daed/pins.env
+          git add ci/pins.env
           git commit -m "chore: bump dae/daed pins to daed-${{ steps.detect.outputs.daed }}"
           git push -f origin "$STAGING"
 
