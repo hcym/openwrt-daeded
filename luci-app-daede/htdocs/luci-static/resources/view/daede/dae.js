@@ -225,6 +225,14 @@ function renderDaeForms(ctx) {
 	o = s.option(form.Value, 'name', _('Name'));
 	o.rmempty = false;
 	o.placeholder = 'proxy';
+	o.validate = function(sid, v) {
+		if (!v) return _('Name is required');
+		/* dae fatals on duplicate outbound names — keep group names unique */
+		const dup = (uci.sections('dae', 'group') || []).some(function(g) {
+			return g['.name'] !== sid && g.name === v;
+		});
+		return dup ? _('Group name must be unique') : true;
+	};
 	o = s.option(form.ListValue, 'policy', _('Policy'));
 	o.value('min_moving_avg', _('Min moving average latency'));
 	o.value('min', _('Min last latency'));
@@ -476,7 +484,10 @@ function renderDaeImportBanner() {
 	if (hasForms)
 		return Promise.resolve(null);
 
-	return fs.read_direct(backend.BACKENDS.dae.config, 'text').then(function(content) {
+	/* stat first (ubus): avoid a 404 when config.dae doesn't exist yet */
+	return fs.stat(backend.BACKENDS.dae.config).then(function() {
+		return fs.read_direct(backend.BACKENDS.dae.config, 'text');
+	}).then(function(content) {
 		if (!content || !/\b(subscription|node)\s*\{/.test(content))
 			return null;
 
@@ -650,7 +661,11 @@ function renderDaeEditor() {
 	textarea.addEventListener('input', refreshPlaceholders);
 
 	function loadConfig() {
-		return fs.read_direct(backend.BACKENDS.dae.config, 'text').then(function(content) {
+		/* stat first (ubus, no HTTP): a fresh install has no config.dae yet, and
+		   reading a missing file via fs.read_direct logs a noisy 404 */
+		return fs.stat(backend.BACKENDS.dae.config).then(function() {
+			return fs.read_direct(backend.BACKENDS.dae.config, 'text');
+		}).then(function(content) {
 			textarea.value = content || '';
 		}).catch(function() {
 			textarea.value = '';
