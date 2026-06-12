@@ -171,8 +171,9 @@ const CSS = [
 	'.dd-settings-card .cbi-section-table-row{display:flex !important;flex-wrap:nowrap !important;width:auto !important;align-items:center;gap:6px;padding:5px 0;margin:0;border:0;border-bottom:1px solid rgba(128,128,128,.15);background:transparent}',
 	/* target the real cells (td.cbi-value-field / actions) — LuCI forces them
 	   block+full-width at mobile, so override on the direct children */
-	'.dd-settings-card .cbi-section-table-row>td{display:inline-block !important;width:auto !important;padding:0 !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0 !important}',
+	'.dd-settings-card .cbi-section-table-row>td{display:inline-block !important;align-self:center !important;width:auto !important;padding:0 !important;border:0 !important;background:transparent !important;box-shadow:none !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0 !important}',
 	'.dd-settings-card .cbi-section-table-row>td::before{content:none !important;display:none !important}',
+	'.dd-settings-card .cbi-section-table-row>td input{vertical-align:middle !important;margin:0 !important}',
 	'.dd-settings-card .cbi-section-table-row>td:nth-child(1){flex:0 0 auto !important;max-width:60px;opacity:.6;font-size:11px}',
 	'.dd-settings-card .cbi-section-table-row>td:nth-child(2){flex:1 1 auto !important}',
 	'.dd-settings-card .cbi-section-table-row>td:nth-child(3){flex:0 0 auto !important;text-align:center}',
