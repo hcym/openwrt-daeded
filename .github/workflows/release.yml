@@ -38,6 +38,17 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # Heavy dae/daed + Go toolchain builds can exhaust the runner's ~14GB.
+      # Drop preinstalled toolchains we never use to reclaim ~25GB and avoid
+      # "No space left on device" on the largest jobs (e.g. aarch64 SDK 25.12).
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android \
+                      /usr/local/share/boost /opt/hostedtoolcache/CodeQL \
+                      /usr/local/.ghcup 2>/dev/null || true
+          sudo docker image prune -af || true
+          df -h /
+
       - name: Build packages
         uses: kenzok8/gh-action-sdk@hash
         env:
